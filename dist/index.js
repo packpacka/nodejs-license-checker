@@ -10484,12 +10484,6 @@ parseJson.noExceptions = (txt, reviver) => {
 /***/ 5840:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
-/*
-Copyright (c) 2013, Yahoo! Inc. All rights reserved.
-Code licensed under the BSD License:
-http://yuilibrary.com/license/
-*/
-
 var UNKNOWN = 'UNKNOWN';
 var UNLICENSED = 'UNLICENSED';
 var fs = __nccwpck_require__(5747);
@@ -10502,7 +10496,7 @@ var licenseFiles = __nccwpck_require__(681);
 var debug = __nccwpck_require__(8237);
 var mkdirp = __nccwpck_require__(6186);
 var spdxSatisfies = __nccwpck_require__(4424);
-var spdxCorrect =__nccwpck_require__(2372);
+var spdxCorrect = __nccwpck_require__(2372);
 
 // Set up debug logging
 // https://www.npmjs.com/package/debug#stderr-vs-stdout
@@ -10520,7 +10514,7 @@ var flatten = function(options) {
         readmeFile,
         licenseData, dirFiles, files = [], noticeFiles = [], licenseFile;
 
-    if (json.private) {
+    if(json.private) {
         moduleInfo.private = true;
     }
 
@@ -10528,11 +10522,11 @@ var flatten = function(options) {
     // This was added so that we don't recurse forever if there was a circular
     // dependency in the dependency tree.
     /*istanbul ignore next*/
-    if (data[key]) {
+    if(data[key]) {
         return data;
     }
 
-    if ((options.production && json.extraneous) || (options.development && !json.extraneous && !json.root)) {
+    if((options.production && json.extraneous) || (options.development && !json.extraneous && !json.root)) {
         return data;
     }
 
@@ -10543,9 +10537,9 @@ var flatten = function(options) {
         return (options.customFormat === undefined || options.customFormat[property] !== false);
     };
 
-    if (include("repository") && json.repository) {
+    if(include("repository") && json.repository) {
         /*istanbul ignore else*/
-        if (typeof json.repository === 'object' && typeof json.repository.url === 'string') {
+        if(typeof json.repository === 'object' && typeof json.repository.url === 'string') {
             moduleInfo.repository = json.repository.url.replace('git+ssh://git@', 'git://');
             moduleInfo.repository = moduleInfo.repository.replace('git+https://github.com', 'https://github.com');
             moduleInfo.repository = moduleInfo.repository.replace('git://github.com', 'https://github.com');
@@ -10553,88 +10547,88 @@ var flatten = function(options) {
             moduleInfo.repository = moduleInfo.repository.replace(/\.git$/, '');
         }
     }
-    if (include("url") && json.url) {
+    if(include("url") && json.url) {
         /*istanbul ignore next*/
-        if (typeof json.url === 'object') {
+        if(typeof json.url === 'object') {
             moduleInfo.url = json.url.web;
         }
     }
-    if (json.author && typeof json.author === 'object') {
+    if(json.author && typeof json.author === 'object') {
         /*istanbul ignore else - This should always be there*/
-        if (include("publisher") && json.author.name) {
+        if(include("publisher") && json.author.name) {
             moduleInfo.publisher = json.author.name;
         }
-        if (include("email") && json.author.email) {
+        if(include("email") && json.author.email) {
             moduleInfo.email = json.author.email;
         }
-        if (include("url") && json.author.url) {
+        if(include("url") && json.author.url) {
             moduleInfo.url = json.author.url;
         }
     }
 
     /*istanbul ignore next*/
-    if (unknown) {
+    if(unknown) {
         moduleInfo.dependencyPath = json.path;
     }
 
     /*istanbul ignore next*/
-    if (options.customFormat) {
+    if(options.customFormat) {
         Object.keys(options.customFormat).forEach(function forEachCallback(item) {
-            if (include(item) && json[item]) {
+            if(include(item) && json[item]) {
                 //For now, we only support strings, not JSON objects
-                if (typeof json[item] === 'string') {
+                if(typeof json[item] === 'string') {
                     moduleInfo[item] = json[item];
                 }
-            } else if (include(item)) {
+            } else if(include(item)) {
                 moduleInfo[item] = options.customFormat[item];
             }
         });
     }
 
-    if (include("path") && json.path && typeof json.path === 'string') {
+    if(include("path") && json.path && typeof json.path === 'string') {
         moduleInfo.path = json.path;
     }
 
     licenseData = json.license || json.licenses || undefined;
 
-    if (json.path && (!json.readme || json.readme.toLowerCase().indexOf('no readme data found') > -1)) {
+    if(json.path && (!json.readme || json.readme.toLowerCase().indexOf('no readme data found') > -1)) {
         readmeFile = path.join(json.path, 'README.md');
         /*istanbul ignore if*/
-        if (fs.existsSync(readmeFile)) {
+        if(fs.existsSync(readmeFile)) {
             json.readme = fs.readFileSync(readmeFile, 'utf8').toString();
         }
     }
 
-    if (licenseData) {
+    if(licenseData) {
         /*istanbul ignore else*/
-        if (Array.isArray(licenseData) && licenseData.length > 0) {
-            moduleInfo.licenses = licenseData.map(function(license){
+        if(Array.isArray(licenseData) && licenseData.length > 0) {
+            moduleInfo.licenses = licenseData.map(function(license) {
                 /*istanbul ignore else*/
-                if (typeof license === 'object') {
+                if(typeof license === 'object') {
                     /*istanbul ignore next*/
                     return license.type || license.name;
-                } else if (typeof license === 'string') {
+                } else if(typeof license === 'string') {
                     return license;
                 }
             });
-        } else if (typeof licenseData === 'object' && (licenseData.type || licenseData.name)) {
+        } else if(typeof licenseData === 'object' && (licenseData.type || licenseData.name)) {
             moduleInfo.licenses = license(licenseData.type || licenseData.name);
-        } else if (typeof licenseData === 'string') {
+        } else if(typeof licenseData === 'string') {
             moduleInfo.licenses = license(licenseData);
         }
-    } else if (license(json.readme)) {
+    } else if(license(json.readme)) {
         moduleInfo.licenses = license(json.readme);
     }
 
-    if (Array.isArray(moduleInfo.licenses)) {
+    if(Array.isArray(moduleInfo.licenses)) {
         /*istanbul ignore else*/
-        if (moduleInfo.licenses.length === 1) {
+        if(moduleInfo.licenses.length === 1) {
             moduleInfo.licenses = moduleInfo.licenses[0];
         }
     }
 
     /*istanbul ignore else*/
-    if (json.path && fs.existsSync(json.path)) {
+    if(json.path && fs.existsSync(json.path)) {
         dirFiles = fs.readdirSync(json.path);
         files = licenseFiles(dirFiles);
 
@@ -10649,27 +10643,27 @@ var flatten = function(options) {
         licenseFile = path.join(json.path, filename);
         // Checking that the file is in fact a normal file and not a directory for example.
         /*istanbul ignore else*/
-        if (fs.lstatSync(licenseFile).isFile()) {
+        if(fs.lstatSync(licenseFile).isFile()) {
             var content;
-            if (!moduleInfo.licenses || moduleInfo.licenses.indexOf(UNKNOWN) > -1 || moduleInfo.licenses.indexOf('Custom:') === 0) {
+            if(!moduleInfo.licenses || moduleInfo.licenses.indexOf(UNKNOWN) > -1 || moduleInfo.licenses.indexOf('Custom:') === 0) {
                 //Only re-check the license if we didn't get it from elsewhere
                 content = fs.readFileSync(licenseFile, { encoding: 'utf8' });
                 moduleInfo.licenses = license(content);
             }
 
-            if (index === 0) {
+            if(index === 0) {
                 // Treat the file with the highest precedence as licenseFile
                 /*istanbul ignore else*/
-                if (include("licenseFile")) {
+                if(include("licenseFile")) {
                     moduleInfo.licenseFile = options.basePath ? path.relative(options.basePath, licenseFile) : licenseFile;
                 }
 
-                if (include("licenseText") && options.customFormat) {
-                    if (!content) {
+                if(include("licenseText") && options.customFormat) {
+                    if(!content) {
                         content = fs.readFileSync(licenseFile, { encoding: 'utf8' });
                     }
                     /*istanbul ignore else*/
-                    if (options._args && !options._args.csv) {
+                    if(options._args && !options._args.csv) {
                         moduleInfo.licenseText = content.trim();
                     } else {
                         moduleInfo.licenseText = content.replace(/"/g, '\'').replace(/\r?\n|\r/g, " ").trim();
@@ -10677,7 +10671,7 @@ var flatten = function(options) {
                 }
 
                 if(include('copyright') && options.customFormat) {
-                    if (!content) {
+                    if(!content) {
                         content = fs.readFileSync(licenseFile, { encoding: 'utf8' });
                     }
 
@@ -10698,7 +10692,7 @@ var flatten = function(options) {
                             .replace(/\n/g, '. ')
                             .trim();
                     }
-                
+
                     // Mark files with multiple copyright statements. This might be
                     // an indicator to take a closer look at the LICENSE file.
                     if(linesWithCopyright.length > 1) {
@@ -10712,17 +10706,17 @@ var flatten = function(options) {
     noticeFiles.forEach(function(filename) {
         var file = path.join(json.path, filename);
         /*istanbul ignore else*/
-        if (fs.lstatSync(file).isFile()) {
+        if(fs.lstatSync(file).isFile()) {
             moduleInfo.noticeFile = options.basePath ? path.relative(options.basePath, file) : file;
         }
     });
 
     /*istanbul ignore else*/
-    if (json.dependencies) {
+    if(json.dependencies) {
         Object.keys(json.dependencies).forEach(function(name) {
             var childDependency = json.dependencies[name],
                 dependencyId = childDependency.name + '@' + childDependency.version;
-            if (data[dependencyId]) { // already exists
+            if(data[dependencyId]) { // already exists
                 return;
             }
             data = flatten({
@@ -10738,7 +10732,7 @@ var flatten = function(options) {
             });
         });
     }
-    if (!json.name || !json.version) {
+    if(!json.name || !json.version) {
         delete data[key];
     }
     return data;
@@ -10747,7 +10741,7 @@ var flatten = function(options) {
 exports.init = function(options, callback) {
     debugLog('scanning %s', options.start);
 
-    if (options.customPath) {
+    if(options.customPath) {
         options.customFormat = this.parseJson(options.customPath);
     }
     var opts = {
@@ -10756,26 +10750,26 @@ exports.init = function(options, callback) {
         depth: options.direct
     };
 
-    if (options.production || options.development) {
+    if(options.production || options.development) {
         opts.dev = false;
     }
 
     var toCheckforFailOn = [];
     var toCheckforOnlyAllow = [];
     var checker, pusher;
-    if (options.onlyAllow) {
+    if(options.onlyAllow) {
         checker = options.onlyAllow;
         pusher = toCheckforOnlyAllow;
     }
-    if (options.failOn) {
+    if(options.failOn) {
         checker = options.failOn;
         pusher = toCheckforFailOn;
     }
-    if (checker && pusher) {
+    if(checker && pusher) {
         checker.split(';').forEach(function(license) {
             var trimmed = license.trim();
             /*istanbul ignore else*/
-            if (trimmed.length > 0) {
+            if(trimmed.length > 0) {
                 pusher.push(trimmed);
             }
         });
@@ -10783,23 +10777,23 @@ exports.init = function(options, callback) {
 
     read(options.start, opts, function(err, json) {
         var data = flatten({
-                deps: json,
-                data: {},
-                color: options.color,
-                unknown: options.unknown,
-                customFormat: options.customFormat,
-                production: options.production,
-                development: options.development,
-                basePath: options.relativeLicensePath ? json.path : null,
-                _args: options
-            }),
-            colorize = options.color,
-            sorted = {},
-            filtered = {},
-            exclude = options.exclude && options.exclude.match(/([^\\\][^,]|\\,)+/g).map(function(license) {
-                return license.replace(/\\,/g, ',').replace(/^\s+|\s+$/g, '');
-            }),
-            inputError = null;
+            deps: json,
+            data: {},
+            color: options.color,
+            unknown: options.unknown,
+            customFormat: options.customFormat,
+            production: options.production,
+            development: options.development,
+            basePath: options.relativeLicensePath ? json.path : null,
+            _args: options
+        });
+        var colorize = options.color;
+        var sorted = {};
+        var filtered = {};
+        var exclude = options.exclude && options.exclude.match(/([^\\\][^,]|\\,)+/g).map(function(license) {
+            return license.replace(/\\,/g, ',').replace(/^\s+|\s+$/g, '');
+        });
+        var inputError = null;
 
         var colorizeString = function(string) {
             /*istanbul ignore next*/
@@ -10807,26 +10801,26 @@ exports.init = function(options, callback) {
         };
 
         Object.keys(data).sort().forEach(function(item) {
-            if (data[item].private) {
+            if(data[item].private) {
                 data[item].licenses = colorizeString(UNLICENSED);
             }
             /*istanbul ignore next*/
-            if (!data[item].licenses) {
+            if(!data[item].licenses) {
                 data[item].licenses = colorizeString(UNKNOWN);
             }
-            if (options.unknown) {
+            if(options.unknown) {
                 /*istanbul ignore else*/
-                if (data[item].licenses && data[item].licenses !== UNKNOWN) {
-                    if (data[item].licenses.indexOf('*') > -1) {
+                if(data[item].licenses && data[item].licenses !== UNKNOWN) {
+                    if(data[item].licenses.indexOf('*') > -1) {
                         /*istanbul ignore if*/
                         data[item].licenses = colorizeString(UNKNOWN);
                     }
                 }
             }
             /*istanbul ignore else*/
-            if (data[item]) {
-                if (options.onlyunknown) {
-                    if (data[item].licenses.indexOf('*') > -1 ||
+            if(data[item]) {
+                if(options.onlyunknown) {
+                    if(data[item].licenses.indexOf('*') > -1 ||
                         data[item].licenses.indexOf(UNKNOWN) > -1) {
                         sorted[item] = data[item];
                     }
@@ -10836,15 +10830,15 @@ exports.init = function(options, callback) {
             }
         });
 
-        if (!Object.keys(sorted).length) {
+        if(!Object.keys(sorted).length) {
             err = new Error('No packages found in this path..');
         }
 
-        if (exclude) {
+        if(exclude) {
             var transformBSD = function(spdx) {
                 return spdx === 'BSD' ? '(0BSD OR BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause)' : spdx;
             };
-            var invert = function(fn) { return function(spdx) { return !fn(spdx);};};
+            var invert = function(fn) { return function(spdx) { return !fn(spdx); }; };
             var spdxIsValid = function(spdx) { return spdxCorrect(spdx) === spdx; };
 
             var validSPDXLicenses = exclude.map(transformBSD).filter(spdxIsValid);
@@ -10861,7 +10855,7 @@ exports.init = function(options, callback) {
                     var licenseMatch = false;
                     licenses.forEach(function(license) {
                         /*istanbul ignore if - just for protection*/
-                        if (license.indexOf(UNKNOWN) >= 0) { // necessary due to colorization
+                        if(license.indexOf(UNKNOWN) >= 0) { // necessary due to colorization
                             filtered[item] = sorted[item];
                         } else {
                             if(license.indexOf('*') >= 0) {
@@ -10871,9 +10865,9 @@ exports.init = function(options, callback) {
                                 license = '(0BSD OR BSD-2-Clause OR BSD-3-Clause OR BSD-4-Clause)';
                             }
 
-                            if (invalidSPDXLicenses.indexOf(license) >= 0) {
+                            if(invalidSPDXLicenses.indexOf(license) >= 0) {
                                 licenseMatch = true;
-                            } else if (spdxCorrect(license) && spdxSatisfies(spdxCorrect(license), spdxExcluder)) {
+                            } else if(spdxCorrect(license) && spdxSatisfies(spdxCorrect(license), spdxExcluder)) {
                                 licenseMatch = true;
                             }
                         }
@@ -10890,61 +10884,72 @@ exports.init = function(options, callback) {
         var restricted = filtered;
 
         // package whitelist
-        if (options.packages) {
+        if(options.packages) {
             var packages = options.packages.split(';');
             restricted = {};
             Object.keys(filtered).map(function(key) {
-                if (packages.includes(key)) {
+                if(packages.includes(key)) {
                     restricted[key] = filtered[key];
                 }
             });
         }
 
         // package blacklist
-        if (options.excludePackages) {
+        if(options.excludePackages) {
             var excludedPackages = options.excludePackages.split(';');
             restricted = {};
             Object.keys(filtered).map(function(key) {
-                if (!excludedPackages.includes(key)) {
+                if(!excludedPackages.includes(key)) {
                     restricted[key] = filtered[key];
                 }
             });
         }
 
-        if (options.excludePrivatePackages) {
+        if(options.excludePrivatePackages) {
             Object.keys(filtered).forEach(function(key) {
                 /*istanbul ignore next - I don't have access to private packages to test */
-                if (restricted[key] && restricted[key].private) {
+                if(restricted[key] && restricted[key].private) {
                     delete restricted[key];
                 }
             });
         }
 
-        Object.keys(restricted).forEach(function(item) {
-            if (toCheckforFailOn.length > 0) {
-                if (toCheckforFailOn.indexOf(restricted[item].licenses) > -1) {
+        var onlyAllowFailCheckItems = [];
+        var failOnCheckFailItems = [];
+        Object.keys(restricted).forEach((item) => {
+            if(toCheckforFailOn.length > 0) {
+                if(toCheckforFailOn.indexOf(restricted[item].licenses) > -1) {
+                    failOnCheckFailItems.push(item);
                     console.error('Found license defined by the --failOn flag: "' + restricted[item].licenses + '". Exiting.');
                     process.exit(1);
                 }
             }
-            if (toCheckforOnlyAllow.length > 0) {
-                var good = false;
-                toCheckforOnlyAllow.forEach(function(k) {
-                    if (restricted[item].licenses.indexOf(k) === -1 && !good) {
-                        good = false;
-                    } else {
-                        good = true;
-                    }
+            if(toCheckforOnlyAllow.length > 0) {
+                const includeAllowedLicense = toCheckforOnlyAllow.some(allowedLicense => {
+                    return restricted[item].licenses === allowedLicense;
                 });
-                if (!good) {
-                    console.error('Package "' + item + '" is licensed under "' + restricted[item].licenses + '" which is not permitted by the --onlyAllow flag. Exiting.');
-                    process.exit(1);
+                if(!includeAllowedLicense) {
+                    onlyAllowFailCheckItems.push(item);
                 }
             }
         });
 
+        if(failOnCheckFailItems.length > 0) {
+            const errors = failOnCheckFailItems.map(item => {
+                return `"${item}": "${restricted[item].licenses}"`;
+            });
+            inputError = 'Found license defined by the --failOn flag:\n' + errors.join('\n') + '"\nExiting.';
+        }
+
+        if(onlyAllowFailCheckItems.length > 0) {
+            const errors = onlyAllowFailCheckItems.map(item => {
+                return `"${item}": "${restricted[item].licenses}"`;
+            });
+            inputError = 'Found license which is not permitted by the --onlyAllow flag:\n' + errors.join('\n') + '"\nExiting.';
+        }
+
         /*istanbul ignore next*/
-        if (err) {
+        if(err) {
             debugError(err);
             inputError = err;
         }
@@ -10969,7 +10974,7 @@ exports.asSummary = function(sorted) {
 
     Object.keys(sorted).forEach(function(key) {
         /*istanbul ignore else*/
-        if (sorted[key].licenses) {
+        if(sorted[key].licenses) {
             licenseCountObj[sorted[key].licenses] = licenseCountObj[sorted[key].licenses] || 0;
             licenseCountObj[sorted[key].licenses]++;
         }
@@ -10996,9 +11001,9 @@ exports.asCSV = function(sorted, customFormat, csvComponentPrefix) {
     var prefixName = '"component"';
     var prefix = csvComponentPrefix;
 
-    if (customFormat && Object.keys(customFormat).length > 0) {
+    if(customFormat && Object.keys(customFormat).length > 0) {
         textArr = [];
-        if (csvComponentPrefix) { textArr.push(prefixName); }
+        if(csvComponentPrefix) { textArr.push(prefixName); }
         textArr.push('"module name"');
         Object.keys(customFormat).forEach(function forEachCallback(item) {
             textArr.push('"' + item + '"');
@@ -11007,8 +11012,8 @@ exports.asCSV = function(sorted, customFormat, csvComponentPrefix) {
     } else {
         textArr = [];
         /*istanbul ignore next*/
-        if (csvComponentPrefix) { textArr.push(prefixName); }
-        ['"module name"','"license"','"repository"'].forEach(function(item) {
+        if(csvComponentPrefix) { textArr.push(prefixName); }
+        ['"module name"', '"license"', '"repository"'].forEach(function(item) {
             textArr.push(item);
         });
         text.push(textArr.join(','));
@@ -11020,9 +11025,9 @@ exports.asCSV = function(sorted, customFormat, csvComponentPrefix) {
         lineArr = [];
 
         //Grab the custom keys from the custom format
-        if (customFormat && Object.keys(customFormat).length > 0) {
-            if (csvComponentPrefix) {
-                lineArr.push('"'+prefix+'"');
+        if(customFormat && Object.keys(customFormat).length > 0) {
+            if(csvComponentPrefix) {
+                lineArr.push('"' + prefix + '"');
             }
             lineArr.push('"' + key + '"');
             Object.keys(customFormat).forEach(function forEachCallback(item) {
@@ -11031,8 +11036,8 @@ exports.asCSV = function(sorted, customFormat, csvComponentPrefix) {
             line = lineArr.join(',');
         } else {
             /*istanbul ignore next*/
-            if (csvComponentPrefix) {
-                lineArr.push('"'+prefix+'"');
+            if(csvComponentPrefix) {
+                lineArr.push('"' + prefix + '"');
             }
             lineArr.push([
                 '"' + key + '"',
@@ -11057,11 +11062,11 @@ exports.asCSV = function(sorted, customFormat, csvComponentPrefix) {
 exports.asMarkDown = function(sorted, customFormat) {
 
     var text = [];
-    if (customFormat && Object.keys(customFormat).length > 0) {
+    if(customFormat && Object.keys(customFormat).length > 0) {
         Object.keys(sorted).forEach(function sortedCallback(sortedItem) {
             text.push(' - **[' + sortedItem + '](' + sorted[sortedItem].repository + ')**');
             Object.keys(customFormat).forEach(function customCallback(customItem) {
-                text.push('    - ' +  customItem + ': ' + sorted[sortedItem][customItem]);
+                text.push('    - ' + customItem + ': ' + sorted[sortedItem][customItem]);
             });
         });
         text = text.join('\n');
@@ -11077,17 +11082,17 @@ exports.asMarkDown = function(sorted, customFormat) {
 };
 
 exports.parseJson = function(jsonPath) {
-    if (typeof jsonPath !== 'string') {
+    if(typeof jsonPath !== 'string') {
         return new Error('did not specify a path');
     }
 
     var jsonFileContents = '',
-        result = { };
+        result = {};
 
     try {
         jsonFileContents = fs.readFileSync(jsonPath, { encoding: 'utf8' });
         result = JSON.parse(jsonFileContents);
-    } catch (err) {
+    } catch(err) {
         result = err;
     }
     return result;
@@ -11099,7 +11104,7 @@ exports.asFiles = function(json, outDir) {
         var licenseFile = json[moduleName].licenseFile,
             fileContents, outFileName, outPath, baseDir;
 
-        if (licenseFile && fs.existsSync(licenseFile)) {
+        if(licenseFile && fs.existsSync(licenseFile)) {
             fileContents = fs.readFileSync(licenseFile);
             outFileName = moduleName + "-LICENSE.txt";
             outPath = path.join(outDir, outFileName);
@@ -19809,7 +19814,7 @@ module.exports = eval("require")("encoding");
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"assert":true,"assert/strict":">= 15","async_hooks":">= 8","buffer_ieee754":"< 0.9.7","buffer":true,"child_process":true,"cluster":true,"console":true,"constants":true,"crypto":true,"_debug_agent":">= 1 && < 8","_debugger":"< 8","dgram":true,"diagnostics_channel":">= 15.1","dns":true,"dns/promises":">= 15","domain":">= 0.7.12","events":true,"freelist":"< 6","fs":true,"fs/promises":[">= 10 && < 10.1",">= 14"],"_http_agent":">= 0.11.1","_http_client":">= 0.11.1","_http_common":">= 0.11.1","_http_incoming":">= 0.11.1","_http_outgoing":">= 0.11.1","_http_server":">= 0.11.1","http":true,"http2":">= 8.8","https":true,"inspector":">= 8.0.0","_linklist":"< 8","module":true,"net":true,"node-inspect/lib/_inspect":">= 7.6.0 && < 12","node-inspect/lib/internal/inspect_client":">= 7.6.0 && < 12","node-inspect/lib/internal/inspect_repl":">= 7.6.0 && < 12","os":true,"path":true,"path/posix":">= 15.3","path/win32":">= 15.3","perf_hooks":">= 8.5","process":">= 1","punycode":true,"querystring":true,"readline":true,"repl":true,"smalloc":">= 0.11.5 && < 3","_stream_duplex":">= 0.9.4","_stream_transform":">= 0.9.4","_stream_wrap":">= 1.4.1","_stream_passthrough":">= 0.9.4","_stream_readable":">= 0.9.4","_stream_writable":">= 0.9.4","stream":true,"stream/promises":">= 15","string_decoder":true,"sys":[">= 0.6 && < 0.7",">= 0.8"],"timers":true,"timers/promises":">= 15","_tls_common":">= 0.11.13","_tls_legacy":">= 0.11.3 && < 10","_tls_wrap":">= 0.11.3","tls":true,"trace_events":">= 10","tty":true,"url":true,"util":true,"util/types":">= 15.3","v8/tools/arguments":">= 10 && < 12","v8/tools/codemap":[">= 4.4.0 && < 5",">= 5.2.0 && < 12"],"v8/tools/consarray":[">= 4.4.0 && < 5",">= 5.2.0 && < 12"],"v8/tools/csvparser":[">= 4.4.0 && < 5",">= 5.2.0 && < 12"],"v8/tools/logreader":[">= 4.4.0 && < 5",">= 5.2.0 && < 12"],"v8/tools/profile_view":[">= 4.4.0 && < 5",">= 5.2.0 && < 12"],"v8/tools/splaytree":[">= 4.4.0 && < 5",">= 5.2.0 && < 12"],"v8":">= 1","vm":true,"wasi":">= 13.4 && < 13.5","worker_threads":">= 11.7","zlib":true}');
+module.exports = JSON.parse('{"assert":true,"node:assert":">= 16","assert/strict":">= 15","node:assert/strict":">= 16","async_hooks":">= 8","node:async_hooks":">= 16","buffer_ieee754":"< 0.9.7","buffer":true,"node:buffer":">= 16","child_process":true,"node:child_process":">= 16","cluster":true,"node:cluster":">= 16","console":true,"node:console":">= 16","constants":true,"node:constants":">= 16","crypto":true,"node:crypto":">= 16","_debug_agent":">= 1 && < 8","_debugger":"< 8","dgram":true,"node:dgram":">= 16","diagnostics_channel":">= 15.1","node:diagnostics_channel":">= 16","dns":true,"node:dns":">= 16","dns/promises":">= 15","node:dns/promises":">= 16","domain":">= 0.7.12","node:domain":">= 16","events":true,"node:events":">= 16","freelist":"< 6","fs":true,"node:fs":">= 16","fs/promises":[">= 10 && < 10.1",">= 14"],"node:fs/promises":">= 16","_http_agent":">= 0.11.1","node:_http_agent":">= 16","_http_client":">= 0.11.1","node:_http_client":">= 16","_http_common":">= 0.11.1","node:_http_common":">= 16","_http_incoming":">= 0.11.1","node:_http_incoming":">= 16","_http_outgoing":">= 0.11.1","node:_http_outgoing":">= 16","_http_server":">= 0.11.1","node:_http_server":">= 16","http":true,"node:http":">= 16","http2":">= 8.8","node:http2":">= 16","https":true,"node:https":">= 16","inspector":">= 8","node:inspector":">= 16","_linklist":"< 8","module":true,"node:module":">= 16","net":true,"node:net":">= 16","node-inspect/lib/_inspect":">= 7.6 && < 12","node-inspect/lib/internal/inspect_client":">= 7.6 && < 12","node-inspect/lib/internal/inspect_repl":">= 7.6 && < 12","os":true,"node:os":">= 16","path":true,"node:path":">= 16","path/posix":">= 15.3","node:path/posix":">= 16","path/win32":">= 15.3","node:path/win32":">= 16","perf_hooks":">= 8.5","node:perf_hooks":">= 16","process":">= 1","node:process":">= 16","punycode":true,"node:punycode":">= 16","querystring":true,"node:querystring":">= 16","readline":true,"node:readline":">= 16","repl":true,"node:repl":">= 16","smalloc":">= 0.11.5 && < 3","_stream_duplex":">= 0.9.4","node:_stream_duplex":">= 16","_stream_transform":">= 0.9.4","node:_stream_transform":">= 16","_stream_wrap":">= 1.4.1","node:_stream_wrap":">= 16","_stream_passthrough":">= 0.9.4","node:_stream_passthrough":">= 16","_stream_readable":">= 0.9.4","node:_stream_readable":">= 16","_stream_writable":">= 0.9.4","node:_stream_writable":">= 16","stream":true,"node:stream":">= 16","stream/promises":">= 15","node:stream/promises":">= 16","string_decoder":true,"node:string_decoder":">= 16","sys":[">= 0.6 && < 0.7",">= 0.8"],"node:sys":">= 16","timers":true,"node:timers":">= 16","timers/promises":">= 15","node:timers/promises":">= 16","_tls_common":">= 0.11.13","node:_tls_common":">= 16","_tls_legacy":">= 0.11.3 && < 10","_tls_wrap":">= 0.11.3","node:_tls_wrap":">= 16","tls":true,"node:tls":">= 16","trace_events":">= 10","node:trace_events":">= 16","tty":true,"node:tty":">= 16","url":true,"node:url":">= 16","util":true,"node:util":">= 16","util/types":">= 15.3","node:util/types":">= 16","v8/tools/arguments":">= 10 && < 12","v8/tools/codemap":[">= 4.4 && < 5",">= 5.2 && < 12"],"v8/tools/consarray":[">= 4.4 && < 5",">= 5.2 && < 12"],"v8/tools/csvparser":[">= 4.4 && < 5",">= 5.2 && < 12"],"v8/tools/logreader":[">= 4.4 && < 5",">= 5.2 && < 12"],"v8/tools/profile_view":[">= 4.4 && < 5",">= 5.2 && < 12"],"v8/tools/splaytree":[">= 4.4 && < 5",">= 5.2 && < 12"],"v8":">= 1","node:v8":">= 16","vm":true,"node:vm":">= 16","wasi":">= 13.4 && < 13.5","worker_threads":">= 11.7","node:worker_threads":">= 16","zlib":true,"node:zlib":">= 16"}');
 
 /***/ }),
 
@@ -20052,13 +20057,37 @@ const core = __nccwpck_require__(2186)
 const github = __nccwpck_require__(5438)
 const licenseChecker = __nccwpck_require__(5840)
 
-try {
-  const allowedLicenses = core.getInput('allow-only')
+const checkLicenses = (path) => {
+  return new Promise((resolve) => {
+    const allowedLicenses = core.getInput('allow-only')
+    try {
+      licenseChecker.init({
+        start: path,
+        onlyAllow: allowedLicenses,
+        excludePackages: excludePackages.join(';')
+      }, err => {
+        resolve(err);
+      })
+    } catch (error) {
+      resolve(error);
+    }
+  });
+}
 
-  licenseChecker.init({
-    start: './',
-    onlyAllow: allowedLicenses,
-  }, err => err && core.setFailed(err.message))
+try {
+  const paths = (core.getInput('paths') || './').split(';');
+
+  Promise.all(paths.map(checkLicenses)).then((errors) => {
+    if (errors.filter(Boolean).length) {
+      errors.forEach((error, index) => {
+        if (error) {
+          console.log(`Found errors while check path "${paths[index]}"`);
+          console.log(error);
+        }
+      })
+      core.setFailed('Licenses check has been failed')
+    }
+  })
 } catch (error) {
   core.setFailed(error.message)
 }

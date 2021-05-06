@@ -5,6 +5,11 @@ inputs:
     description: 'List of allowed licences (example: "MIT;BSD;GPL")'
     required: true
     default: 'MIT;BSD'
+
+  paths:
+    description: 'List of sub-packages in monorepo (including root)'
+    required: false
+    default: './'
 runs:
   using: 'node12'
   main: 'dist/index.js'
