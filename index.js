@@ -1,15 +1,15 @@
 const core = require('@actions/core')
-const github = require('@actions/github')
 const licenseChecker = require('license-checker')
 
 const checkLicenses = (path) => {
   return new Promise((resolve) => {
     const allowedLicenses = core.getInput('allow-only')
+    const excludePackages = core.getInput('exclude-packages')
     try {
       licenseChecker.init({
         start: path,
         onlyAllow: allowedLicenses,
-        excludePackages: excludePackages.join(';')
+        excludePackages: excludePackages
       }, err => {
         resolve(err);
       })
